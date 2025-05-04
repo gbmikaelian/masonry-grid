@@ -1,7 +1,7 @@
 import { PhotoResponse } from "@/types/photos";
 import { pexelsApiV1 } from "@/utils/axios";
 
-export const getPhotos = async (page: number = 1, perPage: number = 20): Promise<PhotoResponse> => {
+export const getPhotos = async (page: number, perPage: number): Promise<PhotoResponse> => {
   const response = await pexelsApiV1.get('/curated', {
     params: {
       page,

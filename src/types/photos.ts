@@ -1,3 +1,5 @@
+import { PaginationQuery } from "./pagination";
+
 export interface Photo {
     id: number;
     width: number;
@@ -27,4 +29,6 @@ export interface PhotoResponse {
     photos: Photo[];
     total_results: number;
     next_page: string;
-  }
+}
+
+export type PhotosRequestQuery = PaginationQuery
