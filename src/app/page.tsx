@@ -1,15 +1,15 @@
 'use client';
 
-import MasonryGrid, { MasonryGridSkeleton } from "@/components/MasonryGrid";
+
 import { useCallback, useEffect, useTransition } from "react";
 import { Photo, PhotoResponse, PhotosRequestQuery } from "@/types/photos";
 import { useRouter } from "next/navigation";
 import { useActionState } from "react";
 import { getPhotos } from "./services/photoService";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import useDebounce from "@/hooks/useDebounce";
-
-const PER_PAGE = 80;
+import MasonryVirtualized from "@/components/MasonryVirtualized";
+import { MAX_COLUMNS, PER_PAGE } from "@/constants";
+import { MasonryVirtualizedSkeleton } from "@/components/MasonryVirtualized/MasonryVirtualizedSkeleton";
 
 const Home = () => {
   const router = useRouter();
@@ -38,28 +38,18 @@ const Home = () => {
     router.push(`/photo/${photo.id}`);
   }, [router]);
 
-  const onIntersect = useDebounce(() => {
+  const onBottomReached = useDebounce(() => {
     startTransition(() => {
       dispatchPhotos({page: photos.page + 1, per_page: photos.per_page});
     });
-  }, 100);
-
-  const [sentinelRef] = useInfiniteScroll({
-    threshold: 0.1,
-    onIntersect: () => {
-      if (photos.next_page) {
-        onIntersect()
-      }
-    },
-  });
+  }, 50);
 
   if (photos?.photos.length === 0 && loading) {
-    return <MasonryGridSkeleton numColumns={3} numRows={6} />;
+    return <MasonryVirtualizedSkeleton numColumns={MAX_COLUMNS} numRows={6} />;
   }
   
   return <>
-    <MasonryGrid photos={photos?.photos} onPhotoClick={handlePhotoClick} />
-    <div ref={sentinelRef} />
+    <MasonryVirtualized photos={photos.photos} onBottomReached={onBottomReached} onPhotoClick={handlePhotoClick} />
   </>;
 };
 
