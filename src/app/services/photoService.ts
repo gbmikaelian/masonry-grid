@@ -1,4 +1,4 @@
-import { PhotoResponse } from "@/types/photos";
+import { Photo, PhotoResponse } from "@/types/photos";
 import { pexelsApiV1 } from "@/utils/axios";
 
 export const getPhotos = async (page: number, perPage: number): Promise<PhotoResponse> => {
@@ -7,6 +7,12 @@ export const getPhotos = async (page: number, perPage: number): Promise<PhotoRes
       page,
       per_page: perPage,
     },
+  });
+  return response.data;
+};
+
+export const getPhoto = async (id: string): Promise<Photo> => {
+  const response = await pexelsApiV1.get(`/photos/${id}`, {
   });
   return response.data;
 };
