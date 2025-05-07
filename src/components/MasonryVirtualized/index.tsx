@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { ESTIMATED_CARD_HEIGHT, MAX_COLUMNS, MIN_COLUMN_WIDTH } from '@/constants';
 import { Photo } from '../../types/photos';
 
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import { getVisiblePhotos } from '@/helpers/getVisiblePhotos';
+import { calculateVisibleItems } from '@/helpers/calculateVisibleItems';
 import { GridContainer, FlexContainer, Column, PhotoCard, Image } from './MasonryStyles';
 
 export interface MasonryVirtualizedProps {
@@ -15,7 +15,7 @@ export interface MasonryVirtualizedProps {
   onBottomReached?: () => void;
 }
 
-const MasonryVirtualized: React.FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick, buffer = 3, onBottomReached }) => {
+const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick, buffer = 3, onBottomReached }) => {
   const [columns, setColumns] = useState<Photo[][]>([]);
   const [numColumns, setNumColumns] = useState(3);
   const [columnHeights, setColumnHeights] = useState<number[]>([]);
@@ -76,11 +76,11 @@ const MasonryVirtualized: React.FC<MasonryVirtualizedProps> = ({ photos, onPhoto
   const minHeight = Math.max(...columnHeights, ESTIMATED_CARD_HEIGHT * 3);
 
   return (
-    <GridContainer ref={containerRef} height="100vh" $overflowX="auto" $maxWidth={1400}>
+    <GridContainer ref={containerRef} height="calc(100vh - 100px)" $overflowX="auto">
       <FlexContainer $alignItems="flex-start" position="relative" $minHeight={minHeight}>
         {columns.map((column, columnIndex) => {
           const colWidth = containerRef.current ? containerRef.current.offsetWidth / numColumns : MIN_COLUMN_WIDTH;
-          const visible = getVisiblePhotos(
+          const visiblePhotos = calculateVisibleItems<Photo>(
             column,
             colWidth,
             scrollTop,
@@ -90,19 +90,19 @@ const MasonryVirtualized: React.FC<MasonryVirtualizedProps> = ({ photos, onPhoto
 
           return (
             <Column key={columnIndex} $minHeight={columnHeights[columnIndex]}>
-              {visible.map(({ photo, top, height }) => (
+              {visiblePhotos.map(({ item, top, height }) => (
                 <PhotoCard
-                  key={photo.id}
+                  key={item.id}
                   height={height}
                   top={top}
-                  onClick={() => onPhotoClick(photo)}
+                  onClick={() => onPhotoClick(item)}
                 >
                   <Image
-                    src={photo.src.large2x}
-                    alt={photo.alt}
+                    src={item.src.large}
+                    alt={item.alt}
                     loading="lazy"
-                    width={photo.width}
-                    height={photo.height}
+                    width={item.width}
+                    height={item.height}
                   />
                 </PhotoCard>
               ))}
@@ -115,4 +115,4 @@ const MasonryVirtualized: React.FC<MasonryVirtualizedProps> = ({ photos, onPhoto
   );
 };
 
-export default MasonryVirtualized; 
+export default memo(MasonryVirtualized);

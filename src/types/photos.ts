@@ -31,4 +31,6 @@ export interface PhotoResponse {
     next_page: string;
 }
 
-export type PhotosRequestQuery = PaginationQuery
+export type PhotosRequestQuery = PaginationQuery & {
+    query?: string;
+}

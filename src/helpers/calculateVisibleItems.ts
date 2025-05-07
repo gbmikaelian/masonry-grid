@@ -1,30 +1,29 @@
-import { Photo } from "@/types/photos";
 import { ESTIMATED_CARD_HEIGHT, GAP } from "@/constants";
-export interface VisiblePhoto {
-  photo: Photo;
+export interface VisibleItems<T> {
+  item: T;
   top: number;
   height: number;
 }
 
-export function getVisiblePhotos(
-  column: Photo[],
+export function calculateVisibleItems<T extends {height: number, width: number}>(
+  column: T[],
   colWidth: number,
   scrollTop: number,
   viewportHeight: number,
   buffer: number,
-): VisiblePhoto[] {
+): VisibleItems<T>[] {
   let y = 0;
-  const visible: VisiblePhoto[] = [];
+  const visibleItems: VisibleItems<T>[] = [];
   for (let i = 0; i < column.length; i++) {
-    const photo = column[i];
-    const height = (photo.height / photo.width) * colWidth;
+    const item = column[i];
+    const height = (item.height / item.width) * colWidth;
     if (
       y + height > scrollTop - buffer * ESTIMATED_CARD_HEIGHT &&
       y < scrollTop + viewportHeight + buffer * ESTIMATED_CARD_HEIGHT
     ) {
-      visible.push({ photo, top: y, height });
+      visibleItems.push({ item, top: y, height });
     }
     y += height + GAP;
   }
-  return visible;
+  return visibleItems;
 }

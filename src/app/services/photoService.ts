@@ -17,12 +17,8 @@ export const getPhoto = async (id: string): Promise<Photo> => {
   return response.data;
 };
 
-export const searchPhotos = async (
-  query: string,
-  page: number = 1,
-  perPage: number = 20
-): Promise<PhotoResponse> => {
-  const response = await pexelsApiV1.get<PhotoResponse>('/search', {
+export const searchPhotos = async (query: string, page: number, perPage: number): Promise<PhotoResponse> => {
+  const response = await pexelsApiV1.get('/search', {
     params: {
       query,
       page,
@@ -30,4 +26,4 @@ export const searchPhotos = async (
     },
   });
   return response.data;
-}; 
+};

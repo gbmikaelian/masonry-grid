@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import styled from 'styled-components';
 import { Photo } from '@/types/photos';
-import Image from 'next/image';
+import NextImage from 'next/image';
 
 const DetailContainer = styled.div`
   padding: 24px;
@@ -35,12 +35,6 @@ const PhotoContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 24px;
-
-  img {
-    max-width: 100%;
-    max-height: 80vh;
-    object-fit: contain;
-  }
 `;
 
 const InfoContainer = styled.div`
@@ -66,6 +60,12 @@ const PhotographerInfo = styled.div`
   }
 `;
 
+const Image = styled(NextImage)`
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+`;
+
 export interface PhotoDetailProps {
   photo: Photo;
   onBack: () => void;
@@ -79,7 +79,7 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ photo, onBack }) => {
       </BackButton>
       
       <PhotoContainer>
-        <Image src={photo?.src.large2x} alt={photo?.alt} width={photo?.width} height={photo?.height} />
+        <Image src={photo?.src.original} alt={photo?.alt} width={photo?.width} height={photo?.height} />
       </PhotoContainer>
 
       <InfoContainer>

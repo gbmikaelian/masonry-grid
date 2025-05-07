@@ -5,7 +5,7 @@ import PhotoDetail from "@/components/PhotoDetail";
 import { Photo } from "@/types/photos";
 import { useParams, useRouter } from "next/navigation";
 import { useActionState, useCallback, useEffect, useTransition } from "react";
-import PhotoDetailSkeleton from '@/components/PhotoDetailSkeleton';
+import PhotoDetailSkeleton from '@/components/PhotoDetail/PhotoDetailSkeleton';
 
 function PhotoPage() {
   const router = useRouter();
@@ -35,9 +35,9 @@ function PhotoPage() {
   }
   
   return <PhotoDetail
-  photo={photo}
-  onBack={onBack}
-/>;
+    photo={photo}
+    onBack={onBack}
+  />;
 }
 
 export default PhotoPage;

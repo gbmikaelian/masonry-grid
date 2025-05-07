@@ -3,9 +3,14 @@ import styled from "styled-components";
 import { keyframes } from "styled-components";
 import NextImage from "next/image";
 
+const shimmer = keyframes`
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+`;
+
 export const GridContainer = styled.div<{ height?: string; $overflowX?: string, $maxWidth?: number }>`
   margin: 0 auto;
-  padding: 16px;
+  padding: 10px;
   position: relative;
   height: ${props => props.height};
   overflow-x: ${props => props.$overflowX};
@@ -29,7 +34,7 @@ export const Column = styled.div<{ $minHeight?: number }>`
   flex: 1;
 `;
 
-export const PhotoCard = styled.div<{ height: number; top: number }>`
+export const PhotoCard = styled.div<{ height: number; top: number; isLoading?: boolean }>`
   width: 100%;
   height: ${props => props.height}px;
   position: absolute;
@@ -38,6 +43,10 @@ export const PhotoCard = styled.div<{ height: number; top: number }>`
   top: ${props => props.top}px;
   cursor: pointer;
   transition: transform 0.2s ease-in-out;
+  background: linear-gradient(90deg, #ececec 25%, #f5f5f5 50%, #ececec 75%);
+  background-size: 800px 104px;
+  border-radius: 8px;
+  animation: ${shimmer} 1.2s infinite;
 
   &:hover {
     transform: scale(1.02);
@@ -49,12 +58,6 @@ export const Image = styled(NextImage)`
     height: 100%;
     object-fit: cover;
     border-radius: 8px;
-`;
-
-// Skeleton animation
-const shimmer = keyframes`
-  0% { background-position: -400px 0; }
-  100% { background-position: 400px 0; }
 `;
 
 export const SkeletonCard = styled.div<{ height: number; top: number }>`
