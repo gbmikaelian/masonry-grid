@@ -3,29 +3,29 @@ import styled from "styled-components";
 import { keyframes } from "styled-components";
 import NextImage from "next/image";
 
-export const GridContainer = styled.div<{ height?: string; overflowX?: string, maxWidth?: number }>`
+export const GridContainer = styled.div<{ height?: string; $overflowX?: string, $maxWidth?: number }>`
   margin: 0 auto;
   padding: 16px;
   position: relative;
   height: ${props => props.height};
-  overflow-x: ${props => props.overflowX};
-  max-width: ${props => props.maxWidth}px;
+  overflow-x: ${props => props.$overflowX};
+  max-width: ${props => props.$maxWidth}px;
 `;
 
-export const FlexContainer = styled.div<{ alignItems?: string, position?: string, minHeight?: number }>`
+export const FlexContainer = styled.div<{  $alignItems?: string, position?: string, $minHeight?: number }>`
   display: flex;
   gap: ${GAP}px;
-  align-items: ${props => props.alignItems};
+  align-items: ${props => props.$alignItems};
   position: ${props => props.position};
-  min-height: ${props => props.minHeight};
+  min-height: ${props => props.$minHeight};
 `;
 
-export const Column = styled.div<{ minHeight?: number }>`
+export const Column = styled.div<{ $minHeight?: number }>`
   display: flex;
   flex-direction: column;
   gap: 16px;
   position: relative;
-  min-height: ${props => props.minHeight !== undefined ? `${props.minHeight}px` : 'unset'};
+  min-height: ${props => props.$minHeight !== undefined ? `${props.$minHeight}px` : 'unset'};
   flex: 1;
 `;
 

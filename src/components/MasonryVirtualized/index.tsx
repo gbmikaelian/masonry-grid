@@ -73,11 +73,11 @@ const MasonryVirtualized: React.FC<MasonryVirtualizedProps> = ({ photos, onPhoto
     },
   });
 
-  const maxHeight = Math.max(...columnHeights, ESTIMATED_CARD_HEIGHT * 3);
+  const minHeight = Math.max(...columnHeights, ESTIMATED_CARD_HEIGHT * 3);
 
   return (
-    <GridContainer ref={containerRef} height="100vh" overflowX="auto" maxWidth={1400}>
-      <FlexContainer alignItems="flex-start" position="relative" minHeight={maxHeight}>
+    <GridContainer ref={containerRef} height="100vh" $overflowX="auto" $maxWidth={1400}>
+      <FlexContainer $alignItems="flex-start" position="relative" $minHeight={minHeight}>
         {columns.map((column, columnIndex) => {
           const colWidth = containerRef.current ? containerRef.current.offsetWidth / numColumns : MIN_COLUMN_WIDTH;
           const visible = getVisiblePhotos(
@@ -89,7 +89,7 @@ const MasonryVirtualized: React.FC<MasonryVirtualizedProps> = ({ photos, onPhoto
           );
 
           return (
-            <Column key={columnIndex} minHeight={columnHeights[columnIndex]}>
+            <Column key={columnIndex} $minHeight={columnHeights[columnIndex]}>
               {visible.map(({ photo, top, height }) => (
                 <PhotoCard
                   key={photo.id}
