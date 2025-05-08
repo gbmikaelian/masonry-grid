@@ -7,6 +7,7 @@ import { Photo } from '../../types/photos';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
 import { calculateVisibleItems } from '@/helpers/calculateVisibleItems';
 import { GridContainer, FlexContainer, Column, PhotoCard, Image } from './MasonryStyles';
+import axios from 'axios';
 
 export interface MasonryVirtualizedProps {
   photos: Photo[];
@@ -14,6 +15,58 @@ export interface MasonryVirtualizedProps {
   buffer?: number;
   onBottomReached?: () => void;
 }
+
+
+type Props = {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+};
+
+const WrappedImage = ({ src, alt, width, height }: Props) => {
+  const [blobUrl, setBlobUrl] = useState<string | null>(null);
+  const controllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    controllerRef.current = controller;
+
+    axios
+      .get(src, {
+        responseType: 'blob',
+        signal: controller.signal,
+      })
+      .then((res) => {
+        const url = URL.createObjectURL(res.data);
+        setBlobUrl(url);
+      })
+      .catch((err) => {
+        if (axios.isCancel(err) || err.name === 'CanceledError' || err.name === 'AbortError') {
+          console.log('Image load aborted');
+        } else {
+          console.error('Image load failed:', err);
+        }
+      });
+
+    return () => {
+      controller.abort();
+    };
+  }, [src]);
+
+  if (!blobUrl) return null;
+
+  return (
+    <Image
+      src={blobUrl}
+      alt={alt}
+      width={width}
+      height={height}
+      loading="lazy"
+    />
+  );
+};
+
 
 const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick, buffer = 3, onBottomReached }) => {
   const [columns, setColumns] = useState<Photo[][]>([]);
@@ -97,10 +150,9 @@ const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick,
                   $top={top}
                   onClick={() => onPhotoClick(item)}
                 >
-                  <Image
+                  <WrappedImage
                     src={item.src.large}
                     alt={item.alt}
-                    loading="lazy"
                     width={item.width}
                     height={item.height}
                   />
