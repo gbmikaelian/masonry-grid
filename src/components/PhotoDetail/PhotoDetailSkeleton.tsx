@@ -13,15 +13,6 @@ const DetailContainer = styled.div`
   color: black;
 `;
 
-const BackButtonSkeleton = styled.div`
-  width: 160px;
-  height: 32px;
-  margin-bottom: 24px;
-  border-radius: 4px;
-  background: linear-gradient(90deg, #ececec 25%, #f5f5f5 50%, #ececec 75%);
-  background-size: 800px 104px;
-  animation: ${shimmer} 1.2s infinite;
-`;
 
 const PhotoContainer = styled.div`
   width: 100%;
@@ -29,17 +20,22 @@ const PhotoContainer = styled.div`
   display: flex;
   justify-content: center;
   margin-bottom: 24px;
+  position: relative;
 `;
 
-const ImageSkeleton = styled.div`
-  width: 500px;
-  height: 600px;
+export const ImageSkeleton = styled.div`
+  width: 400px;
+  height: 550px;
   max-width: 100%;
   min-height: 60vh;
   border-radius: 12px;
   background: linear-gradient(90deg, #ececec 25%, #f5f5f5 50%, #ececec 75%);
   background-size: 800px 104px;
   animation: ${shimmer} 1.2s infinite;
+  position: absolute;
+  left: 0%;
+  right: 0%;
+  margin: 0 auto;
 `;
 
 const InfoContainer = styled.div`
@@ -79,7 +75,6 @@ const PhotographerSkeleton = styled.div`
 const PhotoDetailSkeleton: React.FC = () => {
   return (
     <DetailContainer>
-      <BackButtonSkeleton />
       <PhotoContainer>
         <ImageSkeleton />
       </PhotoContainer>

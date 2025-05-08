@@ -42,7 +42,7 @@ export const MasonryVirtualizedSkeleton: React.FC<MasonryVirtualizedSkeletonProp
               {column.map((height, idx) => {
                 const top = y;
                 y += height + GAP;
-                return <SkeletonCard key={idx} height={height} top={top} />;
+                return <SkeletonCard key={idx} height={height} $top={top} />;
               })}
             </Column>
           );

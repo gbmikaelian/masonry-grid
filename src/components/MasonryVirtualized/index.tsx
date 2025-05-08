@@ -77,7 +77,7 @@ const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick,
 
   return (
     <GridContainer ref={containerRef} height="calc(100vh - 100px)" $overflowX="auto">
-      <FlexContainer $alignItems="flex-start" position="relative" $minHeight={minHeight}>
+      <FlexContainer $alignItems="flex-start" $position="relative" $minHeight={minHeight}>
         {columns.map((column, columnIndex) => {
           const colWidth = containerRef.current ? containerRef.current.offsetWidth / numColumns : MIN_COLUMN_WIDTH;
           const visiblePhotos = calculateVisibleItems<Photo>(
@@ -94,7 +94,7 @@ const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick,
                 <PhotoCard
                   key={item.id}
                   height={height}
-                  top={top}
+                  $top={top}
                   onClick={() => onPhotoClick(item)}
                 >
                   <Image

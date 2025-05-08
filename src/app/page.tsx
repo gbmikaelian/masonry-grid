@@ -1,8 +1,7 @@
 "use client";
-import { useCallback, useEffect, useRef, useState, useTransition } from "react";
-import { Photo, PhotoResponse, PhotosRequestQuery } from "@/types/photos";
+import { useCallback, useState } from "react";
+import { Photo} from "@/types/photos";
 import { useRouter } from "next/navigation";
-import { useActionState } from "react";
 import { getPhotos, searchPhotos } from "./services/photoService";
 import useDebounce from "@/hooks/useDebounce";
 import MasonryVirtualized from "@/components/MasonryVirtualized";
@@ -10,6 +9,7 @@ import { MAX_COLUMNS, PER_PAGE } from "@/constants";
 import { MasonryVirtualizedSkeleton } from "@/components/MasonryVirtualized/MasonryVirtualizedSkeleton";
 import Search from "@/components/Search";
 import styled from "styled-components";
+import { useInfiniteLoader } from "@/hooks/useInfinityLoader";
 
 const Container = styled.div`
   width: 100%;
@@ -19,58 +19,54 @@ const Container = styled.div`
   max-width: 1400px;
 `;
 
+const NoDataFound = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  margin-top: 100%;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+`;
+
 const Home = () => {
   const router = useRouter();
   const [search, setSearch] = useState('');
-  const bottomReachedRef = useRef(false);
 
-  const [photos, dispatchPhotos] = useActionState<PhotoResponse, PhotosRequestQuery>(async (state, {page, per_page, query}) => {
-    const response = await (query ? searchPhotos(query, page, per_page) : getPhotos(page, per_page));
+  const fetchFn = useCallback(async (page: number, limit: number) => {
+    const response = await (search ? searchPhotos(search, page, limit) : getPhotos(page, limit));
+    
+    return {items: response.photos, hasMore: Boolean(response.next_page)};
+  }, [search]);
 
-    const mergedPhotosMap = new Map(state.photos.map(photo => [photo.id, photo]));
-
-    response.photos.forEach(photo => {
-      mergedPhotosMap.set(photo.id, photo);
-    });
-
-    const uniquePhotosArray = Array.from(mergedPhotosMap.values());
-
-    const newState = bottomReachedRef.current ? { ...state, ...response, photos: uniquePhotosArray }: response
-    bottomReachedRef.current = false;
-    return newState;
-  }, {photos: [], page: 1, per_page: PER_PAGE, total_results: 0, next_page: ''});
-
-  const [loading, startTransition] = useTransition()
+  const {items: photos, loadMore, hasMore, loading, reset} = useInfiniteLoader({
+    limit: PER_PAGE,
+    fetchFn
+  })
 
   const handlePhotoClick = useCallback((photo: Photo) => {
     router.push(`/photo/${photo.id}`);
   }, [router]);
 
   const onBottomReached = useDebounce(() => {
-    if (photos.next_page) { 
-      bottomReachedRef.current = true;
-      startTransition(() => {
-        dispatchPhotos({page: photos.page + 1, per_page: photos.per_page, query: search});
-      });
+    if (hasMore) { 
+        loadMore();
     }
   }, 50);
 
   const handleSearch = useDebounce((search: string) => {    
-    startTransition(() => {
-      dispatchPhotos({page: 1, per_page: PER_PAGE, query: search});
-    });
+    reset();
+    setSearch(search);
   }, 500);
-
-  useEffect(() => {
-    handleSearch(search);
-  }, [search, handleSearch]);  
   
   return <Container>
-    <Search $mx={10} onSearch={setSearch} />
+    <Search $mx={10} onSearch={handleSearch} />
     {
-    (photos?.photos.length === 0 && loading) || !photos.photos.length
-      ? <MasonryVirtualizedSkeleton numColumns={MAX_COLUMNS} numRows={6} />
-      : <MasonryVirtualized photos={photos.photos} onBottomReached={onBottomReached} onPhotoClick={handlePhotoClick} />
+    (photos?.length === 0 && loading) || !photos.length
+      ? loading
+        ? <MasonryVirtualizedSkeleton numColumns={MAX_COLUMNS} numRows={6} />
+        : <NoDataFound>No Data Found</NoDataFound>
+      : <MasonryVirtualized photos={photos} onBottomReached={onBottomReached} onPhotoClick={handlePhotoClick} />
     }
   </Container>;
 };

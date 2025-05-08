@@ -1,7 +1,10 @@
-import React, { memo } from 'react';
+'use client';
+
+import React, { memo, useState } from 'react';
 import styled from 'styled-components';
 import { Photo } from '@/types/photos';
 import NextImage from 'next/image';
+import { ImageSkeleton } from './PhotoDetailSkeleton';
 
 const DetailContainer = styled.div`
   padding: 24px;
@@ -31,10 +34,11 @@ const BackButton = styled.button`
 
 const PhotoContainer = styled.div`
   width: 100%;
-  max-height: 80vh;
+  height: 80vh;
   display: flex;
   justify-content: center;
   margin-bottom: 24px;
+  left: 0;
 `;
 
 const InfoContainer = styled.div`
@@ -60,26 +64,32 @@ const PhotographerInfo = styled.div`
   }
 `;
 
-const Image = styled(NextImage)`
+const Image = styled(NextImage)<{ $visible: string }>`
     max-width: 100%;
     max-height: 80vh;
     object-fit: contain;
+    visibility: ${({ $visible }) => $visible};
 `;
 
 export interface PhotoDetailProps {
-  photo: Photo;
+  photo: Photo | null;
   onBack: () => void;
 } 
 
 const PhotoDetail: React.FC<PhotoDetailProps> = ({ photo, onBack }) => {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <DetailContainer>
       <BackButton onClick={onBack}>
         ← Back to Gallery
       </BackButton>
-      
       <PhotoContainer>
-        <Image src={photo?.src.original} alt={photo?.alt} width={photo?.width} height={photo?.height} />
+        { 
+          isLoading &&
+            <ImageSkeleton   />
+        }
+        {photo && <Image $visible={isLoading ? 'hidden' : 'visible'} onLoad={() => setIsLoading(false)} src={photo?.src.original} alt={photo?.alt} width={photo?.width} height={photo?.height} />}
       </PhotoContainer>
 
       <InfoContainer>
