@@ -27,7 +27,7 @@ services:
     # Main nginx reverse proxy routes traffic by domain
     # This nginx is only accessible internally via Docker network
     expose:
-      - '80'
+      - '8081:80'
     # Option 2: Bind to a specific port (if main nginx is not set up)
     # Uncomment the ports section and comment out expose if you want direct access
     # ports:
