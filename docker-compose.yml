@@ -23,8 +23,8 @@ services:
   nginx:
     container_name: nginx-${SERVICE_NAME}
     image: nginx:alpine
-    expose:
-      - '80'
+    ports:
+      - '80:80'
     environment:
       - APP_PORT=${PORT:-3000}
       - SERVER_NAME=${SERVICE_NAME}.${DOMAIN_NAME}
