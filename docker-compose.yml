@@ -21,7 +21,7 @@ services:
     restart: unless-stopped
 
   nginx:
-    container_name: nginx-proxy
+    container_name: nginx-${SERVICE_NAME}
     image: nginx:alpine
     ports:
       - '80:80'
