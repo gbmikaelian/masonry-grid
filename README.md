@@ -93,10 +93,54 @@ The Nginx configuration is set up to:
 - Include security headers
 - Serve static files efficiently
 
+### Multi-Service Architecture
+
+This service uses an internal nginx that doesn't bind to port 80 directly. Instead, a **main nginx reverse proxy** routes traffic by domain name.
+
+#### Architecture:
+```
+Cloudflare → Main Nginx (port 80) → Service Nginx (internal) → Next.js App
+```
+
+#### Setting Up Main Nginx Reverse Proxy
+
+1. **Create main nginx directory** (one-time setup):
+   ```bash
+   mkdir -p /root/main-nginx
+   cd /root/main-nginx
+   ```
+
+2. **Copy the main nginx configuration**:
+   ```bash
+   # Copy main-nginx.conf.example from this repo to main-nginx.conf
+   cp /path/to/masonry-grid/main-nginx.conf.example main-nginx.conf
+   ```
+
+3. **Copy the docker-compose file**:
+   ```bash
+   cp /path/to/masonry-grid/main-nginx-docker-compose.yml.example docker-compose.yml
+   ```
+
+4. **Start the main nginx**:
+   ```bash
+   docker-compose up -d
+   ```
+
+5. **Add new services**: When deploying new services, update `main-nginx.conf` to add their upstream and server blocks.
+
+#### How It Works
+
+- **Main nginx** (port 80): Routes traffic based on domain names
+- **Service nginx** (internal): Handles service-specific configuration and proxies to the app
+- **Next.js app**: Runs on port 3000 internally
+
+This allows multiple services to run on the same server without port conflicts.
+
 ### Notes
 
 - The application runs on port 3000 inside the container
-- Nginx listens on port 80 and proxies to the Next.js app
+- Service nginx is only accessible internally (no port binding)
+- Main nginx reverse proxy handles port 80 and routes by domain
 - Cloudflare should handle SSL/TLS termination
 - Make sure your domain DNS points to your server and Cloudflare is configured properly
 
