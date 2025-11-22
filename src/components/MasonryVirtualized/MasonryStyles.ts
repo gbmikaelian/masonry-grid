@@ -8,13 +8,31 @@ const shimmer = keyframes`
   100% { background-position: 400px 0; }
 `;
 
-export const GridContainer = styled.div<{ height?: string; $overflowX?: string, $maxWidth?: number }>`
+export const GridContainer = styled.div<{ height?: string; $overflowX?: string; $overflowY?: string; $maxWidth?: number }>`
   margin: 0 auto;
   padding: 10px;
   position: relative;
   height: ${props => props.height};
-  overflow-x: ${props => props.$overflowX};
+  overflow-x: ${props => props.$overflowX || 'hidden'};
+  overflow-y: ${props => props.$overflowY || 'auto'};
   max-width: ${props => props.$maxWidth}px;
+  
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
+  
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+  
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 `;
 
 export const FlexContainer = styled.div<{  $alignItems?: string, $position?: string, $minHeight?: number }>`
