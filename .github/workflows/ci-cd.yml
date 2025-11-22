@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: copy file to ssh server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          source: '.'
+          target: 'apps/${{ vars.SERVICE_NAME }}'
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Deploy to SSH server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd apps/${{ vars.SERVICE_NAME }}
+
+            # Create .env file for docker-compose
+            echo "SERVICE_NAME=${{ vars.SERVICE_NAME }}" > .env
+            echo "DOMAIN_NAME=${{ vars.DOMAIN_NAME }}" >> .env
+            echo "PORT=${{ vars.PORT }}" >> .env
+            echo "NEXT_PUBLIC_PEXELS_API_KEY=${{ secrets.NEXT_PUBLIC_PEXELS_API_KEY }}" >> .env
+            echo "NEXT_PUBLIC_PEXELS_API_URL=${{ vars.NEXT_PUBLIC_PEXELS_API_URL }}" >> .env
+
+            # Build and deploy
+            # Note: NEXT_PUBLIC_ variables are embedded at build time
+            docker-compose build
+            docker-compose down
+            docker-compose up -d
+
