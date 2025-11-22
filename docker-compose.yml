@@ -23,9 +23,10 @@ services:
   nginx:
     container_name: nginx-${SERVICE_NAME}
     image: nginx:alpine
-    ports:
-      - '80:80'
-      # Port 443 not needed with Cloudflare proxying (Cloudflare handles SSL)
+    # No port mapping - this nginx is only accessible internally
+    # Main nginx reverse proxy routes traffic based on domain names
+    expose:
+      - '80'
     environment:
       - APP_PORT=${PORT:-3000}
       - SERVER_NAME=${SERVICE_NAME}.${DOMAIN_NAME}
