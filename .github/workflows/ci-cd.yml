@@ -19,7 +19,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: '.'
-          target: 'apps/${{ github.repository }}'
+          target: 'apps/${{ github.event.repository.name }}'
 
   deploy:
     needs: build
@@ -37,10 +37,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd apps/${{ github.repository }}
+            cd apps/${{ github.event.repository.name }}
 
             # Create .env file for docker-compose
-            echo "SERVICE_NAME=${{ github.repository }}" > .env
+            echo "SERVICE_NAME=${{ github.event.repository.name }}" > .env
             echo "DOMAIN_NAME=${{ vars.DOMAIN_NAME }}" >> .env
             echo "PORT=${{ vars.PORT }}" >> .env
             echo "NEXT_PUBLIC_PEXELS_API_KEY=${{ secrets.NEXT_PUBLIC_PEXELS_API_KEY }}" >> .env
