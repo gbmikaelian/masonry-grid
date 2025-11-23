@@ -20,16 +20,6 @@ const Container = styled.div`
   max-width: 1400px;
 `;
 
-const NoDataFound = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  margin-top: 100%;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-`;
-
 const Home = () => {
   const router = useRouter();
   const [search, setSearch] = useState("");
@@ -80,13 +70,11 @@ const Home = () => {
     <Container>
       <Search $mx={10} onSearch={handleSearch} />
       {(photos?.length === 0 && loading) || !photos.length ? (
-        loading ? (
+        loading && (
           <MasonryVirtualizedSkeleton
             numColumns={isMobile ? MOBILE_MAX_COLUMNS : MAX_COLUMNS}
             numRows={6}
           />
-        ) : (
-          <NoDataFound>No Data Found</NoDataFound>
         )
       ) : (
         <MasonryVirtualized
