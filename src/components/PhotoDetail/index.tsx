@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { memo, useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
-import { Photo } from '@/types/photos';
-import NextImage from 'next/image';
-import { ImageSkeleton } from './PhotoDetailSkeleton';
+import React, { memo, useState, useEffect } from "react";
+import styled, { keyframes } from "styled-components";
+import { Photo } from "@/types/photos";
+import NextImage from "next/image";
+import { ImageSkeleton } from "./PhotoDetailSkeleton";
 
 const fadeIn = keyframes`
   from {
@@ -75,11 +75,10 @@ const PhotoContainer = styled.div<{ $avgColor?: string }>`
   margin-bottom: 48px;
   position: relative;
   padding: 24px;
-  background: ${({ $avgColor }) => 
-    $avgColor 
+  background: ${({ $avgColor }) =>
+    $avgColor
       ? `linear-gradient(135deg, ${$avgColor}15 0%, ${$avgColor}08 50%, transparent 100%)`
-      : 'transparent'
-  };
+      : "transparent"};
   border-radius: 24px;
   transition: all 0.5s ease-out;
 `;
@@ -90,10 +89,11 @@ const ImageWrapper = styled.div<{ $visible: boolean }>`
   max-height: 80vh;
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15),
-              0 8px 24px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.15),
+    0 8px 24px rgba(0, 0, 0, 0.1);
   opacity: ${({ $visible }) => ($visible ? 1 : 0)};
-  transform: ${({ $visible }) => ($visible ? 'scale(1)' : 'scale(0.98)')};
+  transform: ${({ $visible }) => ($visible ? "scale(1)" : "scale(0.98)")};
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   background: #f5f5f5;
 `;
@@ -161,7 +161,7 @@ const PhotographerInfo = styled.div`
   font-size: 16px;
   line-height: 1.6;
   color: #4a4a4a;
-  
+
   a {
     color: #2563eb;
     text-decoration: none;
@@ -169,7 +169,7 @@ const PhotographerInfo = styled.div`
     transition: all 0.2s ease;
     border-bottom: 2px solid transparent;
     padding-bottom: 2px;
-    
+
     &:hover {
       color: #1d4ed8;
       border-bottom-color: #2563eb;
@@ -206,14 +206,14 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ photo, onBack }) => {
         <span>←</span>
         <span>Back to Gallery</span>
       </BackButton>
-      
+
       <PhotoContainer $avgColor={photo.avg_color}>
         {isLoading && <ImageSkeleton />}
         <ImageWrapper $visible={imageLoaded}>
           <Image
             onLoad={handleImageLoad}
             src={photo.src.original}
-            alt={photo.alt || 'Photo'}
+            alt={photo.alt || "Photo"}
             width={photo.width}
             height={photo.height}
             priority
@@ -222,12 +222,14 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ photo, onBack }) => {
       </PhotoContainer>
 
       <InfoContainer>
-        <Title>{photo.alt || 'Untitled Photo'}</Title>
-        
+        <Title>{photo.alt || "Untitled Photo"}</Title>
+
         <MetadataContainer>
           <MetadataItem>
             <MetadataLabel>Dimensions</MetadataLabel>
-            <MetadataValue>{photo.width} × {photo.height}</MetadataValue>
+            <MetadataValue>
+              {photo.width} × {photo.height}
+            </MetadataValue>
           </MetadataItem>
           {photo.avg_color && (
             <MetadataItem>
@@ -235,14 +237,14 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ photo, onBack }) => {
               <MetadataValue>
                 <span
                   style={{
-                    display: 'inline-block',
-                    width: '20px',
-                    height: '20px',
-                    borderRadius: '4px',
+                    display: "inline-block",
+                    width: "20px",
+                    height: "20px",
+                    borderRadius: "4px",
                     backgroundColor: photo.avg_color,
-                    verticalAlign: 'middle',
-                    marginRight: '8px',
-                    border: '1px solid rgba(0,0,0,0.1)',
+                    verticalAlign: "middle",
+                    marginRight: "8px",
+                    border: "1px solid rgba(0,0,0,0.1)",
                   }}
                 />
                 {photo.avg_color.toUpperCase()}
@@ -250,10 +252,14 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ photo, onBack }) => {
             </MetadataItem>
           )}
         </MetadataContainer>
-        
+
         <PhotographerInfo>
-          Photo by{' '}
-          <a href={photo.photographer_url} target="_blank" rel="noopener noreferrer">
+          Photo by{" "}
+          <a
+            href={photo.photographer_url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {photo.photographer}
           </a>
         </PhotographerInfo>
@@ -262,4 +268,4 @@ const PhotoDetail: React.FC<PhotoDetailProps> = ({ photo, onBack }) => {
   );
 };
 
-export default memo(PhotoDetail); 
+export default memo(PhotoDetail);

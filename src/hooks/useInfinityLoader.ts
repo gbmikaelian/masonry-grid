@@ -1,10 +1,13 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from "react";
 
 type ItemWithId = { id: string | number };
 
 type UseInfiniteLoaderParams<T> = {
   limit?: number;
-  fetchFn: (page: number, limit: number) => Promise<{ items: T[]; hasMore: boolean }>;
+  fetchFn: (
+    page: number,
+    limit: number
+  ) => Promise<{ items: T[]; hasMore: boolean }>;
 };
 
 export function useInfiniteLoader<T extends ItemWithId>({
@@ -47,7 +50,7 @@ export function useInfiniteLoader<T extends ItemWithId>({
       setItems((prev) => [...prev, ...filtered]);
       setHasMore(more);
     } catch (err) {
-      console.error('Fetch error:', err);
+      console.error("Fetch error:", err);
     } finally {
       setLoading(false);
     }

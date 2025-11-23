@@ -1,8 +1,8 @@
 import { Column, SkeletonCard } from "./MasonryStyles";
 import { GAP } from "@/constants";
 import { FlexContainer, GridContainer } from "./MasonryStyles";
-import styled from 'styled-components';
-import { useEffect, useState } from 'react';
+import styled from "styled-components";
+import { useEffect, useState } from "react";
 
 interface MasonryVirtualizedSkeletonProps {
   numColumns?: number;
@@ -20,11 +20,16 @@ const MasonryFlexContainer = styled(FlexContainer)`
   position: relative;
 `;
 
-export const MasonryVirtualizedSkeleton: React.FC<MasonryVirtualizedSkeletonProps> = ({ numColumns = 3, numRows = 6 }) => {
+export const MasonryVirtualizedSkeleton: React.FC<
+  MasonryVirtualizedSkeletonProps
+> = ({ numColumns = 3, numRows = 6 }) => {
   const [heights, setHeights] = useState<number[]>([]);
 
   useEffect(() => {
-    const generatedHeights = Array.from({ length: numColumns * numRows }, () => 200 + Math.random() * 200);
+    const generatedHeights = Array.from(
+      { length: numColumns * numRows },
+      () => 200 + Math.random() * 200
+    );
     setHeights(generatedHeights);
   }, [numColumns, numRows]);
 

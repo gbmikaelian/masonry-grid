@@ -1,5 +1,5 @@
-import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import React from "react";
+import styled, { keyframes } from "styled-components";
 
 const shimmer = keyframes`
   0% { background-position: -400px 0; }
@@ -12,7 +12,6 @@ const DetailContainer = styled.div`
   margin: 0 auto;
   color: black;
 `;
-
 
 const PhotoContainer = styled.div`
   width: 100%;
@@ -87,4 +86,4 @@ const PhotoDetailSkeleton: React.FC = () => {
   );
 };
 
-export default PhotoDetailSkeleton; 
+export default PhotoDetailSkeleton;

@@ -59,16 +59,19 @@ This project includes Docker and Nginx configuration for production deployment w
 ### Building and Running with Docker
 
 1. **Create the shared network** (if it doesn't exist):
+
    ```bash
    docker network create docker-setup_shared_services_network
    ```
 
 2. **Build and start the containers**:
+
    ```bash
    docker-compose up -d --build
    ```
 
 3. **View logs**:
+
    ```bash
    docker-compose logs -f
    ```
@@ -90,6 +93,7 @@ This project includes Docker and Nginx configuration for production deployment w
 ### Nginx Configuration
 
 The Nginx configuration is set up to:
+
 - Proxy requests to the Next.js application
 - Handle Cloudflare's proxy headers (CF-Connecting-IP, etc.)
 - Redirect HTTP to HTTPS (when behind Cloudflare)
@@ -101,6 +105,7 @@ The Nginx configuration is set up to:
 This service uses an internal nginx that doesn't bind to port 80 directly. Instead, a **main nginx reverse proxy** routes traffic by domain name.
 
 #### Architecture:
+
 ```
 Cloudflare → Main Nginx (port 80) → Service Nginx (internal) → Next.js App
 ```
@@ -108,23 +113,27 @@ Cloudflare → Main Nginx (port 80) → Service Nginx (internal) → Next.js App
 #### Setting Up Main Nginx Reverse Proxy
 
 1. **Create main nginx directory** (one-time setup):
+
    ```bash
    mkdir -p /root/main-nginx
    cd /root/main-nginx
    ```
 
 2. **Copy the main nginx configuration**:
+
    ```bash
    # Copy main-nginx.conf.example from this repo to main-nginx.conf
    cp /path/to/pexels-gallery/main-nginx.conf.example main-nginx.conf
    ```
 
 3. **Copy the docker-compose file**:
+
    ```bash
    cp /path/to/pexels-gallery/main-nginx-docker-compose.yml.example docker-compose.yml
    ```
 
 4. **Start the main nginx**:
+
    ```bash
    docker-compose up -d
    ```
@@ -154,6 +163,7 @@ This project includes a GitHub Actions workflow for automated deployment.
 ### Workflow Overview
 
 The CI/CD pipeline consists of two jobs:
+
 1. **Build**: Copies files to the SSH server
 2. **Deploy**: Builds Docker images and deploys the application
 

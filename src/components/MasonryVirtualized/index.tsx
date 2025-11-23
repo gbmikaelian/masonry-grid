@@ -1,13 +1,30 @@
-'use client';
+"use client";
 
-import React, { FC, memo, useCallback, useEffect, useRef, useState } from 'react';
-import { ESTIMATED_CARD_HEIGHT, MAX_COLUMNS, MIN_COLUMN_WIDTH } from '@/constants';
-import { Photo } from '../../types/photos';
+import React, {
+  FC,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  ESTIMATED_CARD_HEIGHT,
+  MAX_COLUMNS,
+  MIN_COLUMN_WIDTH,
+} from "@/constants";
+import { Photo } from "../../types/photos";
 
-import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
-import { calculateVisibleItems } from '@/helpers/calculateVisibleItems';
-import { GridContainer, FlexContainer, Column, PhotoCard, Image } from './MasonryStyles';
-import axios from 'axios';
+import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
+import { calculateVisibleItems } from "@/helpers/calculateVisibleItems";
+import {
+  GridContainer,
+  FlexContainer,
+  Column,
+  PhotoCard,
+  Image,
+} from "./MasonryStyles";
+import axios from "axios";
 
 export interface MasonryVirtualizedProps {
   photos: Photo[];
@@ -15,7 +32,6 @@ export interface MasonryVirtualizedProps {
   buffer?: number;
   onBottomReached?: () => void;
 }
-
 
 type Props = {
   src: string;
@@ -34,7 +50,7 @@ const WrappedImage = ({ src, alt, width, height }: Props) => {
 
     axios
       .get(src, {
-        responseType: 'blob',
+        responseType: "blob",
         signal: controller.signal,
       })
       .then((res) => {
@@ -42,10 +58,14 @@ const WrappedImage = ({ src, alt, width, height }: Props) => {
         setBlobUrl(url);
       })
       .catch((err) => {
-        if (axios.isCancel(err) || err.name === 'CanceledError' || err.name === 'AbortError') {
-          console.log('Image load aborted');
+        if (
+          axios.isCancel(err) ||
+          err.name === "CanceledError" ||
+          err.name === "AbortError"
+        ) {
+          console.log("Image load aborted");
         } else {
-          console.error('Image load failed:', err);
+          console.error("Image load failed:", err);
         }
       });
 
@@ -67,8 +87,12 @@ const WrappedImage = ({ src, alt, width, height }: Props) => {
   );
 };
 
-
-const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick, buffer = 3, onBottomReached }) => {
+const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({
+  photos,
+  onPhotoClick,
+  buffer = 3,
+  onBottomReached,
+}) => {
   const [columns, setColumns] = useState<Photo[][]>([]);
   const [numColumns, setNumColumns] = useState(3);
   const [columnHeights, setColumnHeights] = useState<number[]>([]);
@@ -79,19 +103,31 @@ const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick,
   const calculateColumns = useCallback(() => {
     if (!containerRef.current) return;
     const containerWidth = containerRef.current.offsetWidth;
-    
+
     const maxColumnsWidth = Math.floor(containerWidth / MAX_COLUMNS);
 
-    const newNumColumns = Math.max(1, Math.floor(containerWidth / (MIN_COLUMN_WIDTH > maxColumnsWidth ? MIN_COLUMN_WIDTH : maxColumnsWidth)));
+    const newNumColumns = Math.max(
+      1,
+      Math.floor(
+        containerWidth /
+          (MIN_COLUMN_WIDTH > maxColumnsWidth
+            ? MIN_COLUMN_WIDTH
+            : maxColumnsWidth)
+      )
+    );
     setNumColumns(newNumColumns);
 
-    const newColumns: Photo[][] = Array.from({ length: newNumColumns }, () => []);
+    const newColumns: Photo[][] = Array.from(
+      { length: newNumColumns },
+      () => []
+    );
     const newHeights: number[] = Array(newNumColumns).fill(0);
 
     photos.forEach((photo) => {
       const shortestIndex = newHeights.indexOf(Math.min(...newHeights));
       newColumns[shortestIndex].push(photo);
-      newHeights[shortestIndex] += (photo.height / photo.width) * (containerWidth / newNumColumns);
+      newHeights[shortestIndex] +=
+        (photo.height / photo.width) * (containerWidth / newNumColumns);
     });
     setColumns(newColumns);
     setColumnHeights(newHeights);
@@ -99,8 +135,8 @@ const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick,
 
   useEffect(() => {
     calculateColumns();
-    window.addEventListener('resize', calculateColumns);
-    return () => window.removeEventListener('resize', calculateColumns);
+    window.addEventListener("resize", calculateColumns);
+    return () => window.removeEventListener("resize", calculateColumns);
   }, [calculateColumns, photos]);
 
   useEffect(() => {
@@ -111,28 +147,38 @@ const MasonryVirtualized: FC<MasonryVirtualizedProps> = ({ photos, onPhotoClick,
     };
     const ref = containerRef.current;
     if (ref) {
-      ref.addEventListener('scroll', handleScroll);
+      ref.addEventListener("scroll", handleScroll);
       setViewportHeight(ref.clientHeight);
     }
     return () => {
-      if (ref) ref.removeEventListener('scroll', handleScroll);
+      if (ref) ref.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   const [sentinelRef] = useInfiniteScroll({
     threshold: 0.1,
     onIntersect: () => {
-        onBottomReached?.();
+      onBottomReached?.();
     },
   });
 
   const minHeight = Math.max(...columnHeights, ESTIMATED_CARD_HEIGHT * 3);
 
   return (
-    <GridContainer ref={containerRef} height="calc(100vh - 100px)" $overflowX="auto">
-      <FlexContainer $alignItems="flex-start" $position="relative" $minHeight={minHeight}>
+    <GridContainer
+      ref={containerRef}
+      height="calc(100vh - 100px)"
+      $overflowX="auto"
+    >
+      <FlexContainer
+        $alignItems="flex-start"
+        $position="relative"
+        $minHeight={minHeight}
+      >
         {columns.map((column, columnIndex) => {
-          const colWidth = containerRef.current ? containerRef.current.offsetWidth / numColumns : MIN_COLUMN_WIDTH;
+          const colWidth = containerRef.current
+            ? containerRef.current.offsetWidth / numColumns
+            : MIN_COLUMN_WIDTH;
           const visiblePhotos = calculateVisibleItems<Photo>(
             column,
             colWidth,

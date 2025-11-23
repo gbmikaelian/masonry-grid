@@ -1,31 +1,31 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
+  output: "standalone",
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'images.pexels.com',
-        pathname: '**',
+        protocol: "https",
+        hostname: "images.pexels.com",
+        pathname: "**",
       },
     ],
   },
   turbopack: {
     rules: {
-      '*.svg': {
-        loaders: ['@svgr/webpack'],
-        as: '*.js',
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
       },
     },
   },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
-    })
+      use: ["@svgr/webpack"],
+    });
 
-    return config
+    return config;
   },
   compiler: {
     styledComponents: true,

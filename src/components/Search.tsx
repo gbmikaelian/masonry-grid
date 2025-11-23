@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import {Search as SearchIcon} from "@/components/SVGComponents"
+import { Search as SearchIcon } from "@/components/SVGComponents";
 import { ChangeEvent, FC, memo, useCallback, useState } from "react";
 
 const SearchContainer = styled.div<{ $mx?: number }>`
@@ -8,11 +8,11 @@ const SearchContainer = styled.div<{ $mx?: number }>`
   background: #fafafa;
   border-radius: 16px;
   padding: 0 20px;
-  margin: 20px ${props => props.$mx}px;
+  margin: 20px ${(props) => props.$mx}px;
   height: 56px;
   max-width: 600px;
   box-sizing: border-box;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
 `;
 
 const SearchInput = styled.input`
@@ -41,22 +41,29 @@ type SearchProps = {
   onSearch?: (search: string) => void;
   defaultSearch?: string;
   $mx?: number;
-}
+};
 
-const Search: FC<SearchProps> = ({onSearch, $mx, defaultSearch = ''}) => {
-  const [search, setSearch] = useState(defaultSearch)
-  
-  const handleSearch = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setSearch(e.target.value);
-    onSearch?.(e.target.value);
-  }, [onSearch]);
+const Search: FC<SearchProps> = ({ onSearch, $mx, defaultSearch = "" }) => {
+  const [search, setSearch] = useState(defaultSearch);
+
+  const handleSearch = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setSearch(e.target.value);
+      onSearch?.(e.target.value);
+    },
+    [onSearch]
+  );
 
   return (
     <SearchContainer $mx={$mx}>
-      <SearchInput value={search} placeholder="Search for free photos" onChange={handleSearch} />
+      <SearchInput
+        value={search}
+        placeholder="Search for free photos"
+        onChange={handleSearch}
+      />
       <WrappedSearchIcon />
     </SearchContainer>
   );
-} 
+};
 
 export default memo(Search);

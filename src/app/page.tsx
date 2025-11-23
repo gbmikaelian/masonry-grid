@@ -1,6 +1,6 @@
 "use client";
 import { useCallback, useState } from "react";
-import { Photo} from "@/types/photos";
+import { Photo } from "@/types/photos";
 import { useRouter } from "next/navigation";
 import { getPhotos, searchPhotos } from "./services/photoService";
 import useDebounce from "@/hooks/useDebounce";
@@ -31,44 +31,66 @@ const NoDataFound = styled.div`
 
 const Home = () => {
   const router = useRouter();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
-  const fetchFn = useCallback(async (page: number, limit: number) => {
-    const response = await (search ? searchPhotos(search, page, limit) : getPhotos(page, limit));
-    
-    return {items: response.photos, hasMore: Boolean(response.next_page)};
-  }, [search]);
+  const fetchFn = useCallback(
+    async (page: number, limit: number) => {
+      const response = await (search
+        ? searchPhotos(search, page, limit)
+        : getPhotos(page, limit));
 
-  const {items: photos, loadMore, hasMore, loading, reset} = useInfiniteLoader({
+      return { items: response.photos, hasMore: Boolean(response.next_page) };
+    },
+    [search]
+  );
+
+  const {
+    items: photos,
+    loadMore,
+    hasMore,
+    loading,
+    reset,
+  } = useInfiniteLoader({
     limit: PER_PAGE,
-    fetchFn
-  })
+    fetchFn,
+  });
 
-  const handlePhotoClick = useCallback((photo: Photo) => {
-    router.push(`/photo/${photo.id}`);
-  }, [router]);
+  const handlePhotoClick = useCallback(
+    (photo: Photo) => {
+      router.push(`/photo/${photo.id}`);
+    },
+    [router]
+  );
 
   const onBottomReached = useDebounce(() => {
-    if (hasMore) { 
-        loadMore();
+    if (hasMore) {
+      loadMore();
     }
   }, 50);
 
-  const handleSearch = useDebounce((search: string) => {    
+  const handleSearch = useDebounce((search: string) => {
     reset();
     setSearch(search);
   }, 500);
-  
-  return <Container>
-    <Search $mx={10} onSearch={handleSearch} />
-    {
-    (photos?.length === 0 && loading) || !photos.length
-      ? loading
-        ? <MasonryVirtualizedSkeleton numColumns={MAX_COLUMNS} numRows={6} />
-        : <NoDataFound>No Data Found</NoDataFound>
-      : <MasonryVirtualized photos={photos} onBottomReached={onBottomReached} onPhotoClick={handlePhotoClick} />
-    }
-  </Container>;
+
+  return (
+    <Container>
+      <Search $mx={10} onSearch={handleSearch} />
+      {(photos?.length === 0 && loading) || !photos.length ? (
+        loading ? (
+          <MasonryVirtualizedSkeleton numColumns={MAX_COLUMNS} numRows={6} />
+        ) : (
+          <NoDataFound>No Data Found</NoDataFound>
+        )
+      ) : (
+        <MasonryVirtualized
+          photos={photos}
+          onBottomReached={onBottomReached}
+          onPhotoClick={handlePhotoClick}
+        />
+      )}
+    </Container>
+  );
 };
 
 export default Home;

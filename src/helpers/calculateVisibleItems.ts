@@ -5,12 +5,14 @@ export interface VisibleItems<T> {
   height: number;
 }
 
-export function calculateVisibleItems<T extends {height: number, width: number}>(
+export function calculateVisibleItems<
+  T extends { height: number; width: number },
+>(
   column: T[],
   colWidth: number,
   scrollTop: number,
   viewportHeight: number,
-  buffer: number,
+  buffer: number
 ): VisibleItems<T>[] {
   let y = 0;
   const visibleItems: VisibleItems<T>[] = [];
