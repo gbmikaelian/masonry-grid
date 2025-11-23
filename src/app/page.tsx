@@ -5,11 +5,12 @@ import { useRouter } from "next/navigation";
 import { getPhotos, searchPhotos } from "./services/photoService";
 import useDebounce from "@/hooks/useDebounce";
 import MasonryVirtualized from "@/components/MasonryVirtualized";
-import { MAX_COLUMNS, PER_PAGE } from "@/constants";
+import { MAX_COLUMNS, MOBILE_MAX_COLUMNS, PER_PAGE } from "@/constants";
 import { MasonryVirtualizedSkeleton } from "@/components/MasonryVirtualized/MasonryVirtualizedSkeleton";
 import Search from "@/components/Search";
 import styled from "styled-components";
 import { useInfiniteLoader } from "@/hooks/useInfinityLoader";
+import useIsMobile from "@/hooks/useIsMobile";
 
 const Container = styled.div`
   width: 100%;
@@ -73,12 +74,17 @@ const Home = () => {
     setSearch(search);
   }, 500);
 
+  const isMobile = useIsMobile();
+
   return (
     <Container>
       <Search $mx={10} onSearch={handleSearch} />
       {(photos?.length === 0 && loading) || !photos.length ? (
         loading ? (
-          <MasonryVirtualizedSkeleton numColumns={MAX_COLUMNS} numRows={6} />
+          <MasonryVirtualizedSkeleton
+            numColumns={isMobile ? MOBILE_MAX_COLUMNS : MAX_COLUMNS}
+            numRows={6}
+          />
         ) : (
           <NoDataFound>No Data Found</NoDataFound>
         )
