@@ -81,8 +81,11 @@ This project includes Docker and Nginx configuration for production deployment w
 ### Docker Configuration
 
 - **Dockerfile**: Multi-stage build optimized for Next.js production
-- **docker-compose.yml**: Orchestrates the Next.js app and Nginx proxy
+- **docker-compose.yml**: Orchestrates the Next.js app and Nginx proxy (generated from template in CI/CD)
+- **docker-compose.yml.template**: Template file used to generate docker-compose.yml with dynamic service names
 - **nginx.conf**: Configured for Cloudflare with proper IP forwarding and security headers
+
+**Note**: The service name in `docker-compose.yml` should match your `SERVICE_NAME` environment variable. In CI/CD, `docker-compose.yml` is automatically generated from `docker-compose.yml.template` using the repository name.
 
 ### Nginx Configuration
 

@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  pexels-gallery-app:
+  app:
     container_name: ${SERVICE_NAME}
     image: ${SERVICE_NAME}
     build:
@@ -35,7 +35,7 @@ services:
       - docker-setup_shared_services_network
     restart: unless-stopped
     depends_on:
-      - pexels-gallery-app
+      - app
 
 networks:
   backend_network:
