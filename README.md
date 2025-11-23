@@ -51,7 +51,7 @@ This project includes Docker and Nginx configuration for production deployment w
 - Docker and Docker Compose installed
 - A `.env` file with the following variables:
   ```
-  SERVICE_NAME=masonry-grid
+  SERVICE_NAME=pexels-gallery
   DOMAIN_NAME=example.com
   PORT=3000
   ```
@@ -113,12 +113,12 @@ Cloudflare → Main Nginx (port 80) → Service Nginx (internal) → Next.js App
 2. **Copy the main nginx configuration**:
    ```bash
    # Copy main-nginx.conf.example from this repo to main-nginx.conf
-   cp /path/to/masonry-grid/main-nginx.conf.example main-nginx.conf
+   cp /path/to/pexels-gallery/main-nginx.conf.example main-nginx.conf
    ```
 
 3. **Copy the docker-compose file**:
    ```bash
-   cp /path/to/masonry-grid/main-nginx-docker-compose.yml.example docker-compose.yml
+   cp /path/to/pexels-gallery/main-nginx-docker-compose.yml.example docker-compose.yml
    ```
 
 4. **Start the main nginx**:
@@ -169,7 +169,7 @@ Set the following secrets in your GitHub repository settings:
 
 Set the following variables in your GitHub repository settings:
 
-- `SERVICE_NAME` - Docker service name (e.g., `masonry-grid`)
+- `SERVICE_NAME` - Docker service name (e.g., `pexels-gallery`)
 - `DOMAIN_NAME` - Your domain name (e.g., `example.com`)
 - `PORT` - Application port (default: `3000`)
 
